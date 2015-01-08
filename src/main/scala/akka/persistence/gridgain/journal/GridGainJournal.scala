@@ -21,7 +21,6 @@ import java.util
 import akka.actor.ActorLogging
 import akka.persistence.journal.{AsyncRecovery, AsyncWriteJournal}
 import akka.persistence.{PersistentConfirmation, PersistentId, PersistentRepr}
-import org.gridgain.grid.lang.GridClosure
 import org.gridgain.grid.streamer._
 import org.gridgain.grid.streamer.index._
 import org.gridgain.grid.{Grid, GridGain}
@@ -32,7 +31,7 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 /**
- * Created by jgoldie on 1/6/15.
+ * The main journal implementation.
  */
 class GridGainJournal extends AsyncWriteJournal with AsyncRecovery with ActorLogging {
 

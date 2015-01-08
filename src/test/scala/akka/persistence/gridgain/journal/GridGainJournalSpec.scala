@@ -18,6 +18,7 @@ package akka.persistence.gridgain.journal
 
 import akka.persistence.journal.JournalSpec
 import com.typesafe.config.ConfigFactory
+import org.gridgain.grid.GridGain
 
 /**
  * Created by jgoldie on 1/6/15.
@@ -30,6 +31,9 @@ class GridGainJournalSpec extends JournalSpec {
       |    journal {
       |      plugin = "akka.persistence.gridgain.journal"
       |    }
+      |  }
+      |  test {
+      |    single-expect-default = 20s
       |  }
       |}
     """.stripMargin)
