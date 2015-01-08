@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:util="http://www.springframework.org/schema/util"
+       xsi:schemaLocation="
+        http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/util
+        http://www.springframework.org/schema/util/spring-util.xsd">
+    <bean id="grid.cfg" class="org.gridgain.grid.GridConfiguration">
+        <property name="localHost" value="127.0.0.1"/>
+
+        <property name="peerClassLoadingEnabled" value="true"/>
+
+        <property name="marshaller">
+            <bean class="org.gridgain.grid.marshaller.optimized.GridOptimizedMarshaller">
+                <property name="requireSerializable" value="false"/>
+            </bean>
+        </property>
+
+        <property name="includeEventTypes">
+            <util:constant static-field="org.gridgain.grid.events.GridEventType.EVTS_CACHE"/>
+        </property>
+
+        <property name="streamerConfiguration">
+            <list>
+                <bean class="org.gridgain.grid.streamer.GridStreamerConfiguration">
+                    <property name="name" value="journal-stream"/>
+                    <property name="windows">
+                        <bean class="org.gridgain.grid.streamer.window.GridStreamerUnboundedWindow">
+                            <property name="indexes">
+                                <list>
+                                    <bean class="org.gridgain.grid.streamer.index.hash.GridStreamerHashIndexProvider">
+                                        <property name="name" value="persistence-id"/>
+                                        <property name="unique" value="false"/>
+                                        <property name="policy" value="EVENT_TRACKING_ON"/>
+                                        <property name="updater">
+                                            <bean class="akka.persistence.gridgain.journal.PersistenceIdIndexUpdater"/>
+                                        </property>
+                                    </bean>
+                                </list>
+                            </property>
+                        </bean>
+                    </property>
+                    <property name="stages">
+                        <list>
+                            <bean class="akka.persistence.gridgain.journal.JournalStreamInitialStage"/>
+                        </list>
+                    </property>
+                </bean>
+            </list>
+        </property>
+    </bean>
+</beans>
