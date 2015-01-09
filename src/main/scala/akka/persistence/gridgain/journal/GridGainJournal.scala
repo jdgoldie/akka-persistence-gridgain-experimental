@@ -35,7 +35,7 @@ import scala.concurrent.Future
  */
 class GridGainJournal extends AsyncWriteJournal with AsyncRecovery with ActorLogging {
 
-  val grid: Grid = GridGain.start("src/main/resources/gridgain-config.xml")
+  val grid: Grid = GridGain.grid
 
   override def asyncWriteMessages(messages: Seq[PersistentRepr]): Future[Unit] = Future {
     grid.streamer("journal-stream").addEvents(JavaConversions.asJavaCollection(messages.map(p => JournalWrite(p))))
@@ -135,7 +135,16 @@ class JournalStreamInitialStage extends GridStreamerStage[JournalAction] {
     window.clearEvicted
     //null stops flow of events to additional stages.  At some point a projections stage will be added which
     //will get the payload from the write events
-
+    val writeEvents = JavaConversions.asScalaIterator(rs.iterator)
+      .filter({p => p match {
+        case JournalWrite(r) => true
+        case _ => false }})
+      .map({ p=> p match {
+        case JournalWrite(r) => r }})
+      .toList
+    if (writeEvents.size > 0) {
+      println(s"should pass on additional events ${writeEvents}")
+    }
     null
   }
 }

@@ -16,29 +16,15 @@
 
 package akka.persistence.gridgain.journal
 
-import akka.persistence.journal.JournalSpec
-import com.typesafe.config.ConfigFactory
-import org.gridgain.grid.{Grid, GridGain}
+import org.gridgain.grid.GridGain
 
 /**
- * Basic journal compatability tests
+ * Used to start an in-process GridGain instance for testing
  */
-class GridGainJournalSpec extends JournalSpec {
+object TestGrid {
 
-  lazy val config = ConfigFactory.parseString(
-    """
-      |akka {
-      |  persistence {
-      |    journal {
-      |      plugin = "akka.persistence.gridgain.journal"
-      |    }
-      |  }
-      |  test {
-      |    single-expect-default = 20s
-      |  }
-      |}
-    """.stripMargin)
-
-  val grid = TestGrid("src/test/resources/gridgain-config.xml")
+  def apply(configPath: String) = {
+    val grid = GridGain.start(configPath)
+  }
 
 }
