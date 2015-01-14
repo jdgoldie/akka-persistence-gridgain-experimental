@@ -41,8 +41,4 @@ class GridGainJournalSpec extends JournalSpec {
 
   val grid = TestGrid("src/test/resources/gridgain-config.xml")
 
-  protected override def beforeEach(): Unit = {
-    super.beforeEach()
-    Thread.sleep(2000) //to help Travis-CI keep up
-  }
 }
