@@ -20,13 +20,15 @@ import java.util
 
 import akka.actor.ActorLogging
 import akka.persistence.journal.{AsyncRecovery, AsyncWriteJournal}
-import akka.persistence.{PersistentConfirmation, PersistentId, PersistentRepr}
+import akka.persistence.{PersistentImpl, PersistentRepr, PersistentConfirmation, PersistentId}
+import org.gridgain.grid.cache.GridCache
 import org.gridgain.grid.streamer._
 import org.gridgain.grid.streamer.index._
 import org.gridgain.grid.{Grid, GridGain}
 
 import scala.collection.JavaConversions
 import scala.collection.immutable.Seq
+import scala.collection.mutable.{MultiMap, Set, HashMap}
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
@@ -141,13 +143,15 @@ class JournalStreamInitialStage extends GridStreamerStage[JournalAction] {
         case _ => false }})
       .map({ p=> p match {
         case JournalWrite(r) => r }})
-      .toList
+      .toBuffer
+    val map = new util.HashMap[String, util.Collection[_]]()
     if (writeEvents.size > 0) {
-      println(s"should pass on additional events ${writeEvents}")
+      map.put("default-projection", JavaConversions.bufferAsJavaList(writeEvents))
     }
-    null
+    map
   }
 }
+
 
 /** The data the index stores for each persistence id */
 case class SequenceIndexEntry(permDeleteFloor: Long, logicalDeleteFloor: Long, highestSeq: Long)

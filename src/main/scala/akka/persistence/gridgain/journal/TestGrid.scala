@@ -16,7 +16,7 @@
 
 package akka.persistence.gridgain.journal
 
-import org.gridgain.grid.GridGain
+import org.gridgain.grid.{GridGainState, GridGain}
 
 /**
  * Used to start an in-process GridGain instance for testing
@@ -24,7 +24,10 @@ import org.gridgain.grid.GridGain
 object TestGrid {
 
   def apply(configPath: String) = {
-    val grid = GridGain.start(configPath)
+    GridGain.state() match {
+      case GridGainState.STARTED => None
+      case _ => GridGain.start(configPath)
+    }
   }
 
 }

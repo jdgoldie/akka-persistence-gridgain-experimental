@@ -45,10 +45,26 @@
                     <property name="stages">
                         <list>
                             <bean class="akka.persistence.gridgain.journal.JournalStreamInitialStage"/>
+                            <bean class="akka.persistence.gridgain.journal.BasicCacheDefaultProjectionStage"/>
                         </list>
                     </property>
                 </bean>
             </list>
         </property>
+
+        <property name="cacheConfiguration">
+            <list>
+                <bean class="org.gridgain.grid.cache.GridCacheConfiguration">
+                    <property name="startSize" value="3000000"/>
+                    <property name="preloadMode" value="SYNC"/>
+                    <property name="writeSynchronizationMode" value="FULL_SYNC"/>
+                    <property name="queryIndexEnabled" value="true"/>
+                    <property name="name" value="projection-cache"/>
+                    <property name="cacheMode" value="LOCAL"/>
+                    <property name="atomicityMode" value="TRANSACTIONAL"/>
+                </bean>
+            </list>
+        </property>
+
     </bean>
 </beans>

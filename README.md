@@ -8,8 +8,6 @@ The current state of this project is a minimum-viable-journal implementation tha
 
 There is still a lot of work to do with the journal to see if the ideas it is testing will work.  In a rough semblance of priority order, the roadmap is:
 
-- Add a *projection stage* to the stream
-- Design *pluggable* projection code
 - Determine *durability* strategy (file system?, etc?)
 - Move *index storage* to GridGain cache
 - Accomodate *deployment* scenarios

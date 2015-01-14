@@ -21,7 +21,7 @@ import scoverage.ScoverageSbtPlugin._
 
 lazy val root = (project in file("."))
   .settings(name := "akka-persistence-gridgain-experimental")
-  .settings(version := "0.0.1")
+  .settings(version := "0.0.2")
   .settings(scalaVersion := "2.11.2")
   .settings(organization := "com.github.jdgoldie")
   .settings(crossScalaVersions := Seq("2.11.2","2.10.4"))
@@ -30,6 +30,14 @@ lazy val root = (project in file("."))
   .settings(bintray.Keys.repository in bintray.Keys.bintray := "maven")
   .settings(bintray.Keys.bintrayOrganization in bintray.Keys.bintray := None)
   .settings(resolvers ++= Seq("krasserm at bintray" at "http://dl.bintray.com/krasserm/maven"))
+  //assemble fat jar for use with GridGain nodes; spring.tooling files cause merge issue
+  .settings(assemblyMergeStrategy in assembly := {
+      case PathList("META-INF", xs) if xs.equals("spring.tooling")  => MergeStrategy.first
+      case x =>
+        val oldStrategy = (assemblyMergeStrategy in assembly).value
+        oldStrategy(x)
+    }
+  )
   .settings(libraryDependencies ++= Seq(
     "com.typesafe.akka"   %% "akka-persistence-experimental"      % "2.3.8" % "compile" withSources() withJavadoc(),
     "com.typesafe.akka"   %% "akka-actor"                         % "2.3.8" % "compile" withSources() withJavadoc(),
