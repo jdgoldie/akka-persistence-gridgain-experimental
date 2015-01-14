@@ -43,6 +43,6 @@ class GridGainJournalSpec extends JournalSpec {
 
   protected override def beforeEach(): Unit = {
     super.beforeEach()
-    Thread.sleep(1000) //to help Travis-CI keep up
+    Thread.sleep(2000) //to help Travis-CI keep up
   }
 }
